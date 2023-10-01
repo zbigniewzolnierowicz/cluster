@@ -2,6 +2,3 @@ name: redo
 description: A minimal TypeScript Pulumi program
 runtime:
   name: nodejs
-  options:
-    # See https://github.com/TypeStrong/ts-node/issues/1007
-    nodeargs: "--loader ts-node/esm --no-warnings"

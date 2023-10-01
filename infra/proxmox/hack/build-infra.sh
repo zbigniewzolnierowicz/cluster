@@ -89,4 +89,4 @@ fi
 
 echo -e "\e[34m[INFO]\e[0m Writing out the IP address."
 
-update_ansible_inventory_ip "wireguard_hosts" "wireguard" $(get_container_ip "wgContainer") "ubuntu"
+update_ansible_inventory_ip "wireguard_hosts" "wireguard" $(get_container_ip "wgContainer[0]") "ubuntu"
