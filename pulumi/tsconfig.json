@@ -1,16 +1,19 @@
 {
   "compilerOptions": {
-    "strict": true,
     "outDir": "bin",
-    "target": "ESNext",
-    "module": "ESNext",
+    "target": "es2016",
+    "module": "commonjs",
     "moduleResolution": "node",
+    "declaration": true,
     "sourceMap": true,
+    "stripInternal": true,
     "experimentalDecorators": true,
     "pretty": true,
     "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
     "noImplicitReturns": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "strictNullChecks": true
   },
-  "files": ["index.ts"]
+  "files": ["index.ts", "wireguard.ts"]
 }

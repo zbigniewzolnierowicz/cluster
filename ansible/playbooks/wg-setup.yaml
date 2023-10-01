@@ -1,11 +1,14 @@
 - name: Install Docker
   hosts: wireguard_hosts
   become: true
+  gather_facts: false
   vars:
     wireguard_dir: "/opt/wireguard"
     wireguard_password: "{{ lookup('ansible.builtin.env', 'WIREGUARD_PASSWORD') }}"
     wireguard_hostname: "{{ lookup('ansible.builtin.env', 'WG_EASY_HOSTNAME') }}"
   tasks:
+    - name: Wait for servers
+      ansible.builtin.wait_for_connection:
     - name: Check for required variables
       ansible.builtin.assert:
         that:
@@ -65,7 +68,7 @@
         src: "../templates/wg.env.j2"
         dest: "{{ wireguard_dir }}/wg.env"
         owner: "{{ user.name }}"
-    - name: Start up Wireguard
+    - name: Start up Wireguard and Pihole
       community.docker.docker_compose:
         project_src: "{{ wireguard_dir }}"
         state: "present"
