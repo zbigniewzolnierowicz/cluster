@@ -1,0 +1,71 @@
+- name: Install Docker
+  hosts: wireguard_hosts
+  become: true
+  vars:
+    wireguard_dir: "/opt/wireguard"
+    wireguard_password: "{{ lookup('ansible.builtin.env', 'WIREGUARD_PASSWORD') }}"
+    wireguard_hostname: "{{ lookup('ansible.builtin.env', 'WG_EASY_HOSTNAME') }}"
+  tasks:
+    - name: Check for required variables
+      ansible.builtin.assert:
+        that:
+          - wireguard_password | length > 0
+          - wireguard_hostname | length > 0
+    - name: Install required system packages
+      ansible.builtin.apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+        state: present
+        update_cache: true
+    - name: Add Docker GPG apt Key
+      ansible.builtin.apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+    - name: Add Docker Repository
+      ansible.builtin.apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+    - name: Update apt and install docker-ce
+      ansible.builtin.apt:
+        pkg:
+          - docker-ce
+          - docker-compose
+        state: present
+        update_cache: true
+    - name: Install Docker Module for Python
+      ansible.builtin.pip:
+        name: docker
+    - name: Add Ubuntu user to docker group
+      register: user
+      ansible.builtin.user:
+        user: "{{ ansible_user }}"
+        append: true
+        groups:
+          - "docker"
+    - name: Create docker compose project directory
+      ansible.builtin.file:
+        name: /opt/wireguard
+        owner: "{{ user.name }}"
+        state: directory
+        mode: "0755"
+    - name: Copy docker-compose config
+      register: "composefile"
+      ansible.builtin.copy:
+        src: "../bootstrap/wireguard/compose.yaml"
+        dest: "{{ wireguard_dir }}/docker-compose.yaml"
+        owner: "{{ user.name }}"
+    - name: Write env file
+      ansible.builtin.template:
+        src: "../templates/wg.env.j2"
+        dest: "{{ wireguard_dir }}/wg.env"
+        owner: "{{ user.name }}"
+    - name: Start up Wireguard
+      community.docker.docker_compose:
+        project_src: "{{ wireguard_dir }}"
+        state: "present"
