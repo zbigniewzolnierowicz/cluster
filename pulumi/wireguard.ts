@@ -12,11 +12,12 @@ export class WireguardVirtualMachines {
     const baseImage = new proxmox.storage.File(
       `${nodeName}-base-image`,
       {
-        contentType: "",
-        datastoreId: "local-lvm",
+        contentType: "iso",
+        datastoreId: "local",
         nodeName,
         sourceFile: {
-          path: "http://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img",
+          path: "https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-nocloud-amd64.qcow2",
+          fileName: "debian-12-nocloud-amd64.img",
         },
       },
       { provider },

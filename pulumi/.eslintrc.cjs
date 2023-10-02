@@ -18,6 +18,7 @@ module.exports = {
         semi: true,
       },
     ],
+    "no-unused-vars": "off",
   },
   overrides: [
     {
