@@ -16,8 +16,8 @@ export class WireguardVirtualMachines {
         datastoreId: "local",
         nodeName,
         sourceFile: {
-          path: "https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-nocloud-amd64.qcow2",
-          fileName: "debian-12-nocloud-amd64.img",
+          path: "https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-9.2-20230513.x86_64.qcow2",
+          fileName: "ALMA9.img",
         },
       },
       { provider },
@@ -39,6 +39,7 @@ export class WireguardVirtualMachines {
             datastoreId: "data-nvme",
             fileId: baseImage.id,
             interface: "scsi0",
+            size: 20,
           },
         ],
 
@@ -48,6 +49,7 @@ export class WireguardVirtualMachines {
             { ipv4: { address: "192.168.1.100/24", gateway: "192.168.1.1" } },
           ],
           userAccount: {
+            username: "admin",
             keys: [sshKey],
           },
         },
@@ -57,6 +59,8 @@ export class WireguardVirtualMachines {
             bridge: "vmbr0",
           },
         ],
+
+        cpu: { type: "host", cores: 1 },
 
         operatingSystem: { type: "l26" },
 
