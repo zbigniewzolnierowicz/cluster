@@ -6,6 +6,7 @@
     wireguard_dir: "/opt/wireguard"
     wireguard_password: "{{ lookup('ansible.builtin.env', 'WIREGUARD_PASSWORD') }}"
     wireguard_hostname: "{{ lookup('ansible.builtin.env', 'WG_EASY_HOSTNAME') }}"
+    pihole_password: "{{ lookup('ansible.builtin.env', 'PIHOLE_PASSWORD') }}"
   tasks:
     - name: Wait for servers
       ansible.builtin.wait_for_connection:
@@ -14,37 +15,44 @@
         that:
           - wireguard_password | length > 0
           - wireguard_hostname | length > 0
-    - name: Install required system packages
-      ansible.builtin.apt:
-        pkg:
-          - apt-transport-https
-          - ca-certificates
-          - curl
-          - software-properties-common
-          - python3-pip
-          - virtualenv
-          - python3-setuptools
+    - name: Add Docker signing key
+      ansible.builtin.rpm_key:
         state: present
-        update_cache: true
-    - name: Add Docker GPG apt Key
-      ansible.builtin.apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
+        key: https://download.docker.com/linux/centos/gpg
     - name: Add Docker Repository
-      ansible.builtin.apt_repository:
-        repo: deb https://download.docker.com/linux/ubuntu focal stable
-        state: present
+      ansible.builtin.yum_repository:
+        name: docker
+        description: Docker repository
+        baseurl: https://download.docker.com/linux/centos/$releasever/$basearch/stable/
     - name: Update apt and install docker-ce
-      ansible.builtin.apt:
+      ansible.builtin.dnf:
         pkg:
+          - python3
+          - python3-pip
           - docker-ce
-          - docker-compose
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
         state: present
         update_cache: true
     - name: Install Docker Module for Python
       ansible.builtin.pip:
         name: docker
-    - name: Add Ubuntu user to docker group
+    - name: Install Docker Compose
+      ansible.builtin.pip:
+        name: docker-compose
+    - name: Enable Docker service
+      ansible.builtin.systemd:
+        name: docker
+        state: started
+        enabled: true
+    - name: add ip_tables kernel module
+      ansible.builtin.modprobe:
+        name: ip_tables
+        state: present
+        persistent: present
+    - name: Add user to docker group
       register: user
       ansible.builtin.user:
         user: "{{ ansible_user }}"
@@ -63,10 +71,15 @@
         src: "../bootstrap/wireguard/compose.yaml"
         dest: "{{ wireguard_dir }}/docker-compose.yaml"
         owner: "{{ user.name }}"
-    - name: Write env file
+    - name: Write Wireguard env file
       ansible.builtin.template:
         src: "../templates/wg.env.j2"
         dest: "{{ wireguard_dir }}/wg.env"
+        owner: "{{ user.name }}"
+    - name: Write Pi-hole env file
+      ansible.builtin.template:
+        src: "../templates/pihole.env.j2"
+        dest: "{{ wireguard_dir }}/pihole.env"
         owner: "{{ user.name }}"
     - name: Start up Wireguard and Pihole
       community.docker.docker_compose:

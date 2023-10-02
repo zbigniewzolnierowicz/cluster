@@ -28,15 +28,15 @@ services:
     image: pihole/pihole
     container_name: pihole
     environment:
-      # ⚠️ Change the Web UI Password:
-      - WEBPASSWORD=foobar123
+      - TZ=Europe/Warsaw
+    env_file: pihole.env
     volumes:
       - '/opt/wireguard/.pihole/etc-pihole:/etc/pihole'
       - '/opt/wireguard/.pihole/etc-dnsmasq.d:/etc/dnsmasq.d'
     ports:
       - "53:53/tcp"
       - "53:53/udp"
-      - "5353:5353/tcp"
+      - "80:80/tcp"
     restart: unless-stopped
     networks:
       wg-easy:
