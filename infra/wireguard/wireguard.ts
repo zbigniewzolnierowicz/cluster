@@ -1,10 +1,11 @@
 import * as proxmox from "@muhlba91/pulumi-proxmoxve";
+import { Output } from "@pulumi/pulumi";
 
 export class WireguardVirtualMachines {
   constructor(
     private provider: proxmox.Provider,
     private nodeName: string,
-    private sshKey: string,
+    private sshKey: string | Output<string>,
   ) {}
 
   public build(): proxmox.vm.VirtualMachine[] {

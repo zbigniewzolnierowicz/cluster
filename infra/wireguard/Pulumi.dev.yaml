@@ -5,4 +5,5 @@ config:
     secure: v1:A/PlkFdnOb+J4ZC2:K9HHep9So/QFQzNAx0h0whlYSZp2fXMaQ5yvUw==
   redo:proxmox-username:
     secure: v1:TbqgXRRuWAss65Ix:c1VOJP2X8A8/V5btSzszgcr5f5B0u8Pb
-  redo:ssh-key: id_ed25519.pub
+  redo:ssh-key:
+    secure: v1:j3let3daDMLVRerf:Lm4VjwK1W1gWMGVdlmBJoSQrJ2ADbNIIDaM08SnWEc/GaTQZQCW2dNjqSm2h90/utIMtHgAE3XjXeah/jUCQ3NjNuusQ5fnclNfJ5SW2BUX8rRG7HnaSc2867GhpTQmgOExUFCyMojitl4NcAJM=
