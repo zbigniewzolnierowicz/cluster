@@ -14,8 +14,7 @@
   },
   "dependencies": {
     "@muhlba91/pulumi-proxmoxve": "^5.12.2",
-    "@pulumi/pulumi": "^3.0.0",
-    "@zed-infra/proxmox": "1.0.0"
+    "@pulumi/pulumi": "^3.0.0"
   },
   "scripts": {
     "up": "pulumi up",
