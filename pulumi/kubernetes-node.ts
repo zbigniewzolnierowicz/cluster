@@ -36,7 +36,7 @@ export class KubernetesNode
 
         nodeName,
         vmId: 300 + this.nodeIndex,
-        memory: { shared: 8192 },
+        memory: { dedicated: 8192 },
         disks: [
           {
             datastoreId,

@@ -50,17 +50,21 @@ const wireguardService = (nodeName: string) =>
     baseImagesList[nodeName],
   );
 
-const k8sNode = (index: number, nodeName: string) =>
+const k8sNode = (index: number, nodeName: string, drive?: string) =>
   new KubernetesNode(
     index,
     proxmoxProvider,
     nodeName,
     sshKey,
     baseImagesList[nodeName],
+    drive,
   );
 
 export const services: Record<(typeof nodes)[number], any[]> = {
-  asterix: [wireguardService("asterix").build(), k8sNode(0, "asterix").build()],
+  asterix: [
+    wireguardService("asterix").build(),
+    k8sNode(0, "asterix", "data-nvme").build(),
+  ],
   pve: [k8sNode(1, "pve").build()],
   thinkcentre: [k8sNode(2, "thinkcentre").build()],
 };
