@@ -72,15 +72,13 @@ cd $PULUMI_PATH
 check_if_infra_is_there
 if [ $? -eq 1 ]; then
     echo -e "\e[34m[INFO]\e[0m No infrastructure."
-    gum confirm 'Would you like to run `pulumi up`?'
-    if [ ! $? -eq 0 ]; then
-        echo -e "\e[34m[INFO]\e[0m Understood. Exiting."
-        exit 1
-    fi
-
-    setup_infra
 else
     echo -e "\e[34m[INFO]\e[0m Infrastructure detected."
+fi
+
+gum confirm 'Would you like to run `pulumi up`?'
+if [ $? -eq 0 ]; then
+  setup_infra
 fi
 
 if [ ! -f "$ANSIBLE_INVENTORY_PATH" ]; then

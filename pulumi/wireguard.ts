@@ -1,28 +1,12 @@
 import * as proxmox from "@muhlba91/pulumi-proxmoxve";
-import { Output } from "@pulumi/pulumi";
+import { BaseVM, ResourceBuilder } from "./baseVM";
 
-export class WireguardVirtualMachines {
-  constructor(
-    private provider: proxmox.Provider,
-    private nodeName: string,
-    private sshKey: string | Output<string>,
-  ) {}
-
-  public build(): proxmox.vm.VirtualMachine[] {
-    const { provider, nodeName, sshKey } = this;
-    const baseImage = new proxmox.storage.File(
-      `${nodeName}-base-image`,
-      {
-        contentType: "iso",
-        datastoreId: "local",
-        nodeName,
-        sourceFile: {
-          path: "https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-9.2-20230513.x86_64.qcow2",
-          fileName: "ALMA9.img",
-        },
-      },
-      { provider },
-    );
+export class WireguardVirtualMachines
+  extends BaseVM
+  implements ResourceBuilder<proxmox.vm.VirtualMachine>
+{
+  public build() {
+    const { provider, nodeName, sshKey, baseImage } = this;
 
     const wgContainer = new proxmox.vm.VirtualMachine(
       "wireguard",
@@ -71,6 +55,6 @@ export class WireguardVirtualMachines {
       { provider },
     );
 
-    return [wgContainer];
+    return wgContainer;
   }
 }
