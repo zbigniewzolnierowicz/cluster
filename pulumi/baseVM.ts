@@ -1,15 +1,14 @@
 import * as proxmox from "@muhlba91/pulumi-proxmoxve";
-import { Output } from "@pulumi/pulumi";
-
-export interface ResourceBuilder<T> {
-  build(): T;
-}
+import { Output, Resource } from "@pulumi/pulumi";
+import { NodeName } from "./utils";
 
 export class BaseVM {
   constructor(
     protected provider: proxmox.Provider,
-    protected nodeName: string,
     protected sshKey: string | Output<string>,
-    protected baseImage: proxmox.storage.File,
   ) {}
+}
+
+export interface ResourceBuilder {
+  build(nodeName: NodeName): Resource;
 }

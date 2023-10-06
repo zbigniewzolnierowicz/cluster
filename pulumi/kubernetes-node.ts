@@ -1,31 +1,28 @@
 import { BaseVM, ResourceBuilder } from "./baseVM";
 import * as proxmox from "@muhlba91/pulumi-proxmoxve";
-import { VirtualMachine } from "@muhlba91/pulumi-proxmoxve/vm/virtualMachine";
-import { Output } from "@pulumi/pulumi";
+import { Output, Resource } from "@pulumi/pulumi";
 import { IPv4 } from "ipaddr.js";
+import { NodeName } from "./utils";
+import { baseImagesList } from ".";
 
-export class KubernetesNode
-  extends BaseVM
-  implements ResourceBuilder<proxmox.vm.VirtualMachine>
-{
+export class KubernetesNode extends BaseVM implements ResourceBuilder {
   private k8sNodeName: string;
   private ip: IPv4;
 
   constructor(
     private nodeIndex: number,
     protected provider: proxmox.Provider,
-    protected nodeName: string,
     protected sshKey: string | Output<string>,
-    protected baseImage: proxmox.storage.File,
     private datastoreId: string = "local-lvm",
   ) {
-    super(provider, nodeName, sshKey, baseImage);
+    super(provider, sshKey);
     this.k8sNodeName = `k8s-${nodeIndex}`;
     this.ip = new IPv4([192, 168, 1, 90 + nodeIndex]);
   }
 
-  build(): VirtualMachine {
-    const { provider, nodeName, sshKey, baseImage, datastoreId } = this;
+  build(nodeName: NodeName): Resource {
+    const { provider, sshKey, datastoreId } = this;
+    const baseImage = baseImagesList[nodeName];
 
     const k8sNode = new proxmox.vm.VirtualMachine(
       this.k8sNodeName,

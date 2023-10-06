@@ -1,8 +1,0 @@
-encryptionsalt: v1:ZOUVRSZTxyo=:v1:7NUVN3TeypoJ3OnF:Yl35OXjclZ0BgJUKPQQ14iy8SvCTdA==
-config:
-  redo:proxmox-host: https://192.168.1.50:8006
-  redo:proxmox-password:
-    secure: v1:A/PlkFdnOb+J4ZC2:K9HHep9So/QFQzNAx0h0whlYSZp2fXMaQ5yvUw==
-  redo:proxmox-username:
-    secure: v1:TbqgXRRuWAss65Ix:c1VOJP2X8A8/V5btSzszgcr5f5B0u8Pb
-  redo:ssh-key: id_ed25519.pub

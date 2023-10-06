@@ -1,12 +1,16 @@
 import * as proxmox from "@muhlba91/pulumi-proxmoxve";
 import { BaseVM, ResourceBuilder } from "./baseVM";
+import { Resource } from "@pulumi/pulumi";
+import { NodeName } from "./utils";
+import { baseImagesList } from ".";
 
 export class WireguardVirtualMachines
   extends BaseVM
-  implements ResourceBuilder<proxmox.vm.VirtualMachine>
+  implements ResourceBuilder
 {
-  public build() {
-    const { provider, nodeName, sshKey, baseImage } = this;
+  build(nodeName: NodeName): Resource {
+    const { provider, sshKey } = this;
+    const baseImage = baseImagesList[nodeName];
 
     const wgContainer = new proxmox.vm.VirtualMachine(
       "wireguard",
