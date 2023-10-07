@@ -1,5 +1,6 @@
+---
 - name: Install Docker
-  hosts: wireguard_hosts
+  hosts: wg
   become: true
   gather_facts: false
   vars:

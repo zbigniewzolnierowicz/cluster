@@ -1,6 +1,8 @@
 import * as proxmox from "@muhlba91/pulumi-proxmoxve";
 import { ResourceBuilder } from "./baseVM";
 import { Resource } from "@pulumi/pulumi";
+import { parse } from "yaml";
+import { readFileSync } from "fs";
 
 export const nodes = ["asterix", "pve", "thinkcentre"] as const;
 export type NodeName = (typeof nodes)[number];
@@ -48,3 +50,14 @@ export const build = (
     {} as Record<NodeName, Resource[]>,
   );
 };
+
+export interface NodeConfig {
+  ansible_user: string;
+  ansible_host: string;
+}
+
+export type NodeGroup = Record<string, NodeConfig>;
+
+export const nodeConfig: Record<string, NodeGroup> = parse(
+  readFileSync("../nodes.config.yaml").toString(),
+);

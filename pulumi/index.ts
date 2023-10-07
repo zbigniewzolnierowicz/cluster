@@ -17,14 +17,14 @@ if (!sshKey) throw new Error("ssh key is not set");
 
 export const baseImagesList = baseImagesListGenerator(proxmoxProvider);
 
-const wireguardService = () =>
-  new WireguardVirtualMachines(proxmoxProvider, sshKey);
+const wireguardService = (index: number) =>
+  new WireguardVirtualMachines(index, proxmoxProvider, sshKey);
 
 const k8sNode = (index: number, drive?: string) =>
   new KubernetesNode(index, proxmoxProvider, sshKey, drive);
 
 export const services: Record<NodeName, pulumi.Resource[]> = build({
-  asterix: [wireguardService(), k8sNode(0, "data-nvme")],
+  asterix: [wireguardService(0), k8sNode(0, "data-nvme")],
   pve: [k8sNode(1)],
   thinkcentre: [k8sNode(2)],
 });

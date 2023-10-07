@@ -1,0 +1,20 @@
+---
+wg:
+  hosts:
+    wg-00:
+      ansible_host: 192.168.1.100
+      ansible_user: admin
+
+kubernetes:
+  hosts:
+    k8s-00:
+      ansible_host: 192.168.1.91
+      ansible_user: admin
+    k8s-01:
+      ansible_host: 192.168.1.92
+      ansible_user: admin
+    k8s-02:
+      ansible_host: 192.168.1.93
+      ansible_user: admin
+
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/inventory.json
