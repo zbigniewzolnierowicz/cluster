@@ -18,7 +18,7 @@ export class KubernetesNode extends BaseVM implements ResourceBuilder {
   ) {
     super(provider, sshKey);
     this.k8sNodeName = `k8s-${nodeIndex.toString().padStart(2, "0")}`;
-    this.config = nodeConfig.kubernetes[this.k8sNodeName];
+    this.config = nodeConfig.kubernetes.hosts[this.k8sNodeName];
     const ip = parse(this.config.ansible_host);
 
     if (ip.kind() !== "ipv4") {

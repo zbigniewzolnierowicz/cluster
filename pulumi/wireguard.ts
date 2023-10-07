@@ -17,7 +17,7 @@ export class WireguardVirtualMachines
   ) {
     super(provider, sshKey);
     this.name = `wg-${index.toString().padStart(2, "0")}`;
-    this.config = nodeConfig.wg[this.name];
+    this.config = nodeConfig.wg.hosts[this.name];
   }
 
   build(nodeName: NodeName): Resource {
