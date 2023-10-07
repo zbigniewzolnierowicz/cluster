@@ -66,7 +66,7 @@ export class WireguardVirtualMachines
           },
         ],
 
-        cpu: { type: "host", cores: 1 },
+        cpu: { type: "host", cores: 2 },
 
         operatingSystem: { type: "l26" },
 
