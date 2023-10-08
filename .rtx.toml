@@ -1,2 +1,7 @@
+env_file = ".env"
+
+[env]
+KUBECONFIG="./kubeconfig"
+
 [tools]
 node = "20"

@@ -6,6 +6,79 @@ wg:
       ansible_user: admin
 
 kubernetes:
+  vars:
+    # IP ranges {{{
+    
+    # IP range for nodes
+    node_cidr: 192.168.1.0/24
+
+    # IP ranges for cluster and services
+    cluster_cidr: 10.42.0.0/16
+    service_cidr: 10.43.0.0/16
+
+    # }}}
+    # Major network services {{{
+    
+    # kube-vip settings
+    kube_vip_address: "192.168.1.254"
+    # k8s-gateway settings
+    k8s_gateway_address: "192.168.1.253"
+    # CoreDNS settings
+    coredns_addr: "{{ service_cidr.split(',')[0] | ansible.utils.nthhost(10) }}"
+
+    # }}}
+    # k3s settings {{{
+    k3s_release_version: "v1.28.2+k3s1"
+    k3s_build_cluster: true
+    k3s_become: true
+    k3s_etcd_datastore: true
+    k3s_use_unsupported_config: true
+    k3s_server_manifests_urls:
+    - url: https://raw.githubusercontent.com/kube-vip/kube-vip/main/docs/manifests/rbac.yaml
+      filename: kube-vip-rbac.yaml
+    - url: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.68.0/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml
+      filename: custom-prometheus-podmonitors.yaml
+    - url: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.68.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml
+      filename: custom-prometheus-prometheusrules.yaml
+    - url: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.68.0/example/prometheus-operator-crd/monitoring.coreos.com_scrapeconfigs.yaml
+      filename: custom-prometheus-scrapeconfigs.yaml
+    - url: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.68.0/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
+      filename: custom-prometheus-servicemonitors.yaml
+    k3s_server_manifests_templates:
+      - ../templates/kubernetes/cilium-helmchart.yaml.j2
+      - ../templates/kubernetes/cilium-l2-announcements.yaml.j2
+      - ../templates/kubernetes/coredns.yaml.j2
+    k3s_server_pod_manifests_templates:
+      - ../templates/kubernetes/kubevip.yaml.j2
+    k3s_registration_address: "{{ kube_vip_address }}"
+    k3s_control_node: true
+    k3s_server:
+      node-ip: "{{ ansible_host }}"
+      tls-san:
+        - "{{ kube_vip_address }}"
+      docker: false
+      flannel-backend: "none"             # This needs to be in quotes
+      disable:
+        - coredns                         # Disable coredns                 - replaced with Coredns Helm Chart
+        - flannel                         # Disable flannel                 - replaced with Cilium Helm Chart
+        - local-storage                   # Disable local-path-provisioner  - installed with Flux
+        - metrics-server                  # Disable metrics-server          - installed with Flux
+        - servicelb                       # Disable servicelb               - replaced with Cilium Helm Chart
+        - traefik                         # Disable traefik                 - replaced with ingress-nginx and installed with Flux
+      disable-network-policy: true
+      disable-cloud-controller: true
+      disable-kube-proxy: true            # Cilium uses eBPF
+      write-kubeconfig-mode: "644"
+      cluster-cidr: "{{ cluster_cidr }}"
+      service-cidr: "{{ service_cidr }}"
+      etcd-expose-metrics: true           # Required to monitor etcd with kube-prometheus-stack
+      kube-controller-manager-arg:
+        - "bind-address=0.0.0.0"          # Required to monitor kube-controller-manager with kube-prometheus-stack
+      kube-scheduler-arg:
+        - "bind-address=0.0.0.0"          # Required to monitor kube-scheduler with kube-prometheus-stack
+      kube-apiserver-arg:
+        - "anonymous-auth=true"           # Required for HAProxy health-checks
+    # }}}
   hosts:
     k8s-00:
       ansible_host: 192.168.1.91

@@ -8,6 +8,10 @@
     wireguard_password: "{{ lookup('ansible.builtin.env', 'WIREGUARD_PASSWORD') }}"
     wireguard_hostname: "{{ lookup('ansible.builtin.env', 'WG_EASY_HOSTNAME') }}"
     pihole_password: "{{ lookup('ansible.builtin.env', 'PIHOLE_PASSWORD') }}"
+  pre_tasks:
+    - name: Pausing for 5 seconds...
+      ansible.builtin.pause:
+        seconds: 5
   tasks:
     - name: Wait for servers
       ansible.builtin.wait_for_connection:
@@ -25,7 +29,7 @@
         name: docker
         description: Docker repository
         baseurl: https://download.docker.com/linux/centos/$releasever/$basearch/stable/
-    - name: Update apt and install docker-ce
+    - name: Update list of packages and install docker-ce
       ansible.builtin.dnf:
         pkg:
           - python3
