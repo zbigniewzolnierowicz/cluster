@@ -13,3 +13,9 @@ ansible-kubernetes:
 build:
   @just infra
   @just ansible-wireguard
+  @just ansible-kubernetes
+
+flux-install:
+  kubectl apply --kustomize ./kubernetes/bootstrap
+  cat $AGE_KEY_PATH | kubectl -n flux-system create secret generic sops-age --from-file=age.agekey=/dev/stdin
+  

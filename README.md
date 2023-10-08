@@ -4,6 +4,8 @@ My cluster, heavily ~plagiarized~ inspired by [onedr0p/flux-cluster-template](ht
 
 I liked their ansible setup, but not very much how they did everything else, also this is very much a learning experience for me. Also, heavily integrated with Pulumi.
 
+All of the configs are either in .env or in nodes.config.yaml (which also serves as the Ansible inventory)
+
 ## Requirements
 
 - mikefarah/yq
