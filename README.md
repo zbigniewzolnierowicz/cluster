@@ -10,3 +10,8 @@ I liked their ansible setup, but not very much how they did everything else, als
 - jq
 - charmbracelet/gum
 - just
+
+## TODO
+
+- [ ] Create backup and restore Ansible playbooks for Wireguard
+- [ ] Create backup and restore Ansible playbooks for Pi-Hole
