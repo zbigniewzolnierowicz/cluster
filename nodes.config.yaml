@@ -51,9 +51,9 @@ kubernetes:
     - url: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.68.0/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
       filename: custom-prometheus-servicemonitors.yaml
     k3s_server_manifests_templates:
-      - ../templates/k3s/cilium-helmchart.yaml.j2
-      - ../templates/k3s/cilium-l2-announcements.yaml.j2
-      - ../templates/k3s/coredns.yaml.j2
+      - ../templates/k3s/custom-cilium-helmchart.yaml.j2
+      - ../templates/k3s/custom-cilium-l2-announcements.yaml.j2
+      - ../templates/k3s/custom-coredns.yaml.j2
     k3s_server_pod_manifests_templates:
       - ../templates/k3s/kubevip.yaml.j2
     k3s_registration_address: "{{ kube_vip_address }}"

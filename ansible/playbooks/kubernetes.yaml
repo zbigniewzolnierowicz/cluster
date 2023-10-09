@@ -27,11 +27,11 @@
       ansible.builtin.stat:
         path: /etc/rancher/k3s/config.yaml
       register: k3s_installed
-    - name: Ignore manifests templates and urls if the cluster is already installed
-      when: k3s_installed.stat.exists
-      ansible.builtin.set_fact:
-        k3s_server_manifests_templates: []
-        k3s_server_manifests_urls: []
+    # - name: Ignore manifests templates and urls if the cluster is already installed
+    #   when: k3s_installed.stat.exists
+    #   ansible.builtin.set_fact:
+    #     k3s_server_manifests_templates: []
+    #     k3s_server_manifests_urls: []
     - name: Install Kubernetes
       ansible.builtin.include_role:
         name: xanmanning.k3s

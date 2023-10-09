@@ -18,4 +18,9 @@ build:
 flux-install:
   kubectl apply --kustomize ./kubernetes/bootstrap
   cat $AGE_KEY_PATH | kubectl -n flux-system create secret generic sops-age --from-file=age.agekey=/dev/stdin
+  sops --decrypt ./kubernetes/flux/vars/cluster-secrets.sops.yaml | kubectl apply -f -
+  sops --decrypt ./kubernetes/flux/vars/cluster-secrets-user.sops.yaml | kubectl apply -f -
+  kubectl apply -f ./kubernetes/flux/vars/cluster-settings.yaml
+  kubectl apply -f ./kubernetes/flux/vars/cluster-settings-user.yaml
+  kubectl apply --kustomize ./kubernetes/flux/config
   
