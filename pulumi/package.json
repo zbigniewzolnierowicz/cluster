@@ -14,7 +14,9 @@
   },
   "dependencies": {
     "@muhlba91/pulumi-proxmoxve": "^5.12.2",
+    "@pulumi/cloudflare": "^5.12.0",
     "@pulumi/pulumi": "^3.0.0",
+    "@pulumiverse/purrl": "^0.4.1",
     "ipaddr.js": "^2.1.0",
     "yaml": "^2.3.2"
   },

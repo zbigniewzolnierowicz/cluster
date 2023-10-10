@@ -58,6 +58,7 @@ export interface NodeConfig {
 
 export type NodeGroup = Record<string, NodeConfig>;
 
-export const nodeConfig: Record<string, { hosts: NodeGroup }> = parse(
-  readFileSync("../nodes.config.yaml").toString(),
-);
+export const nodeConfig: Record<
+  string,
+  { hosts: NodeGroup; vars: Record<string, string> }
+> = parse(readFileSync("../nodes.config.yaml").toString());
