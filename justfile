@@ -23,4 +23,6 @@ flux-install:
   kubectl apply -f ./kubernetes/flux/vars/cluster-settings.yaml
   kubectl apply -f ./kubernetes/flux/vars/cluster-settings-user.yaml
   kubectl apply --kustomize ./kubernetes/flux/config
-  
+
+ansible-flux:
+  ansible-playbook ./ansible/playbooks/flux-settings.yaml -i ./nodes.config.yaml
