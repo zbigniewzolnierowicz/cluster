@@ -8,9 +8,12 @@ wg:
 all:
   vars:
     bootstrap_age_public_key: "age1a3n0nnyg97hethp49t7a07xk2dty4j2g4pqr6gvzhx3esrvx3f4qqmk0tc"
+    # DNS settings {{{
     bootstrap_cloudflare_domain: "zed.gay"
     bootstrap_cloudflare_token: "{{ lookup('ansible.builtin.env', 'CLOUDFLARE_TOKEN') }}"
     bootstrap_acme_email: "zbigniew@zolnierowi.cz"
+    bootstrap_acme_production_enabled: false
+    # }}}
     # IP ranges {{{
     
     # IP range for nodes
@@ -29,6 +32,10 @@ all:
     k8s_gateway_address: "192.168.1.253"
     # CoreDNS settings
     coredns_addr: "{{ service_cidr.split(',')[0] | ansible.utils.nthhost(10) }}"
+
+    # Ingress settings
+    external_ingress_address: "192.168.1.252"
+    internal_ingress_address: "192.168.1.251"
 
     # }}}
 
