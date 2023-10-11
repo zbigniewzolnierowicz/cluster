@@ -31,13 +31,13 @@ spec:
   values:
     controllers:
       main:
-        controllers:
+        containers:
           main:
             image:
               repository: ghcr.io/onedr0p/plex
               tag: 1.28.2.6151-914ddd2b3
-    env:
-      TZ: Europe/Warsaw
+            env:
+              TZ: Europe/Warsaw
     service:
       main:
         type: LoadBalancer
