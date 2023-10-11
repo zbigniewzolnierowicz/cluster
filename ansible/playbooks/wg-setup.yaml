@@ -86,6 +86,17 @@
         src: "../templates/pihole.env.j2"
         dest: "{{ wireguard_dir }}/pihole.env"
         owner: "{{ user.name }}"
+    - name: Create pihole directory
+      ansible.builtin.file:
+        name: "{{ wireguard_dir }}/.pihole/etc-dnsmasq.d"
+        owner: "{{ user.name }}"
+        state: directory
+        mode: "0755"
+    - name: Write Pi-hole k8s-gateway file
+      ansible.builtin.template:
+        src: "../templates/99-k8s-gateway-forward.conf.j2"
+        dest: "{{ wireguard_dir }}/.pihole/etc-dnsmasq.d/99-k8s-gateway-forward.conf"
+        owner: "{{ user.name }}"
     - name: Start up Wireguard and Pihole
       community.docker.docker_compose:
         project_src: "{{ wireguard_dir }}"
