@@ -9,13 +9,20 @@
       ansible.builtin.pause:
         seconds: 5
   tasks:
-    - name: Update list of packages and install pip
+    - name: Update list of packages and install necessary ones
       ansible.builtin.dnf:
         pkg:
           - python3
           - python3-pip
+          - iscsi-initiator-utils
         state: present
         update_cache: true
+    - name: Enable iSCSI daemon
+      ansible.builtin.systemd:
+        name: iscsid
+        state: started
+        enabled: true
+        daemon_reload: true
     - name: Install required Python modules
       ansible.builtin.pip:
         name:
@@ -24,9 +31,12 @@
         state: present
     - name: add ip_vs kernel module
       ansible.builtin.modprobe:
-        name: ip_vs
+        name: "{{ item }}"
         state: present
         persistent: present
+      loop:
+        - ip_vs
+        - iscsi_tcp
     - name: Check if cluster is installed
       check_mode: false
       ansible.builtin.stat:
