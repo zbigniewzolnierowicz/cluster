@@ -13,7 +13,7 @@ all:
     bootstrap_cloudflare_domain: "zed.gay"
     bootstrap_cloudflare_token: "{{ lookup('ansible.builtin.env', 'CLOUDFLARE_TOKEN') }}"
     bootstrap_acme_email: "zbigniew@zolnierowi.cz"
-    bootstrap_acme_production_enabled: false
+    bootstrap_acme_production_enabled: true
     # }}}
     # IP ranges {{{
     
