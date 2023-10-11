@@ -26,3 +26,6 @@ flux-install:
 
 ansible-flux:
   ansible-playbook ./ansible/playbooks/flux-settings.yaml -i ./nodes.config.yaml
+
+reconcile:
+  flux reconcile source git -n flux-system home-kubernetes
