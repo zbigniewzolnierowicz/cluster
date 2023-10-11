@@ -24,7 +24,7 @@ export class KubernetesNode extends BaseVM implements ResourceBuilder {
     this.config = nodeConfig.kubernetes.hosts[this.k8sNodeName];
     const ip = parse(this.config.ansible_host);
     this.passthrough =
-      DISABLE_PASSTHROUGH_FOR_THESE_INDEXES.includes(nodeIndex);
+      !DISABLE_PASSTHROUGH_FOR_THESE_INDEXES.includes(nodeIndex);
 
     if (ip.kind() !== "ipv4") {
       throw new Error("Not valid IPv4!");
