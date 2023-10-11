@@ -5,10 +5,13 @@ import { IPv4, parse } from "ipaddr.js";
 import { NodeConfig, NodeName, nodeConfig } from "./utils";
 import { baseImagesList } from ".";
 
+const DISABLE_PASSTHROUGH_FOR_THESE_INDEXES = [2];
+
 export class KubernetesNode extends BaseVM implements ResourceBuilder {
   private k8sNodeName: string;
   private ip: IPv4;
   private config: NodeConfig;
+  private passthrough: boolean;
 
   constructor(
     private nodeIndex: number,
@@ -20,6 +23,8 @@ export class KubernetesNode extends BaseVM implements ResourceBuilder {
     this.k8sNodeName = `k8s-${nodeIndex.toString().padStart(2, "0")}`;
     this.config = nodeConfig.kubernetes.hosts[this.k8sNodeName];
     const ip = parse(this.config.ansible_host);
+    this.passthrough =
+      DISABLE_PASSTHROUGH_FOR_THESE_INDEXES.includes(nodeIndex);
 
     if (ip.kind() !== "ipv4") {
       throw new Error("Not valid IPv4!");
@@ -50,6 +55,7 @@ export class KubernetesNode extends BaseVM implements ResourceBuilder {
             size: 20,
           },
         ],
+        machine: "q35",
 
         initialization: {
           type: "nocloud",
@@ -67,6 +73,12 @@ export class KubernetesNode extends BaseVM implements ResourceBuilder {
           },
         },
 
+        vga: {
+          enabled: true,
+          type: "serial0",
+          memory: 4,
+        },
+
         networkDevices: [
           {
             bridge: "vmbr0",
@@ -78,6 +90,18 @@ export class KubernetesNode extends BaseVM implements ResourceBuilder {
         operatingSystem: { type: "l26" },
 
         cdrom: { enabled: false, interface: "ide3" },
+
+        hostpcis: this.passthrough
+          ? [
+              {
+                pcie: true,
+                device: "0",
+                id: "0000:00:02.0",
+                xvga: true,
+              },
+            ]
+          : [],
+
         started: true,
       },
       { provider },
