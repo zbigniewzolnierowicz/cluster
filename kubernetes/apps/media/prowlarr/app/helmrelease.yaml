@@ -31,7 +31,7 @@ spec:
   values:
     image:
       repository: ghcr.io/onedr0p/prowlarr-nightly
-      tag: 1.6.1.3559
+      tag: 1.9.4.4022
     env:
       TZ: Europe/Warsaw
       PROWLARR__INSTANCE_NAME: Prowlarr
