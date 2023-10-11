@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -29,9 +29,13 @@ spec:
     - name: openebs
       namespace: kube-system
   values:
-    image:
-      repository: ghcr.io/onedr0p/qbittorrent
-      tag: 4.5.5@sha256:16ddd3697593e8f0e82de2b2eae4edbe1b67eb04936cdb2dccae79fda3338850
+    controllers:
+      main:
+        controllers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/qbittorrent
+              tag: 4.5.5@sha256:16ddd3697593e8f0e82de2b2eae4edbe1b67eb04936cdb2dccae79fda3338850
     env:
       TZ: Europe/Warsaw
       QBITTORRENT__PORT: &port 80
@@ -58,21 +62,25 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: internal
+        className: internal
         hosts:
           - host: &host "torrent.${SECRET_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: OnRootMismatch
-      supplementalGroups: [10000]
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [10000]
     persistence:
       config:
         enabled: true
@@ -80,13 +88,15 @@ spec:
       media:
         enabled: true
         type: nfs
-        mountPath: /media
+        globalMounts:
+          - path: /media
         server: "${NAS_ADDRESS}"
         path: "${NAS_BASE_URL}/media"
       downloads:
         enabled: true
         type: nfs
-        mountPath: /downloads
+        globalMounts:
+          - path: /downloads
         server: "${NAS_ADDRESS}"
         path: "${NAS_BASE_URL}/media/downloads"
     resources:
@@ -94,4 +104,4 @@ spec:
         cpu: 10m
         memory: 250Mi
       limits:
-        memory: 6Gi
+        memory: 1Gi
