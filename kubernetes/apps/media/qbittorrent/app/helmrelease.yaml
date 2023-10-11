@@ -47,7 +47,7 @@ spec:
         enabled: true
         type: LoadBalancer
         annotations:
-          io.cilium/lb-ipam-ips: 192.168.1.250
+          io.cilium/lb-ipam-ips: ${QBIT_ADDRESS}
         ports:
           bittorrent:
             enabled: true
@@ -83,6 +83,12 @@ spec:
         mountPath: /media
         server: "${NAS_ADDRESS}"
         path: "${NAS_BASE_URL}/media"
+      downloads:
+        enabled: true
+        type: nfs
+        mountPath: /downloads
+        server: "${NAS_ADDRESS}"
+        path: "${NAS_BASE_URL}/media/downloads"
     resources:
       requests:
         cpu: 10m
