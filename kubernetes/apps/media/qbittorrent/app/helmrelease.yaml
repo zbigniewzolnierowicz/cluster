@@ -83,8 +83,6 @@ spec:
         mountPath: /media
         server: "${NAS_ADDRESS}"
         path: "${NAS_BASE_URL}/media"
-    nodeSelector:
-      node-role.kubernetes.io/worker: "true"
     resources:
       requests:
         cpu: 10m
