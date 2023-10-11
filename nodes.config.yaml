@@ -44,6 +44,7 @@ all:
     # }}}
     # Other services {{{
     qbittorrent_address: 192.168.1.250
+    plex_address: 192.168.1.249
     # }}}
 
 kubernetes:

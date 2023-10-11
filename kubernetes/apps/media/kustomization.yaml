@@ -5,3 +5,4 @@ resources:
   - ./namespace.yaml
   - ./qbittorrent/ks.yaml
   - ./prowlarr/ks.yaml
+  - ./plex/ks.yaml
