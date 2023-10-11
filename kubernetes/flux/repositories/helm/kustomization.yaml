@@ -19,3 +19,5 @@ resources:
   - ./stakater.yaml
   - ./weave-gitops.yaml
   - ./openebs.yaml
+  - ./intel.yaml
+  - ./node-feature-discovery.yaml
