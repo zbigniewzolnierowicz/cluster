@@ -8,7 +8,7 @@ wg:
 all:
   vars:
     bootstrap_age_public_key: "age1a3n0nnyg97hethp49t7a07xk2dty4j2g4pqr6gvzhx3esrvx3f4qqmk0tc"
-    bootstrap_flux_github_webhook_token: ""
+    bootstrap_flux_github_webhook_token: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"
     # DNS settings {{{
     bootstrap_cloudflare_domain: "zed.gay"
     bootstrap_cloudflare_token: "{{ lookup('ansible.builtin.env', 'CLOUDFLARE_TOKEN') }}"
