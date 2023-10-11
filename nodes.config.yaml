@@ -37,7 +37,13 @@ all:
     # Ingress settings
     external_ingress_address: "192.168.1.252"
     internal_ingress_address: "192.168.1.251"
-
+    # }}}
+    # NAS {{{
+    nas_address: 192.168.1.51
+    nas_base_url: /mnt/eldorado
+    # }}}
+    # Other services {{{
+    qbittorrent_address: 192.168.1.250
     # }}}
 
 kubernetes:
