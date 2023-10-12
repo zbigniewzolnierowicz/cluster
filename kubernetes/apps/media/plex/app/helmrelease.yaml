@@ -31,6 +31,7 @@ spec:
   values:
     controllers:
       main:
+        type: statefulset
         containers:
           main:
             image:
@@ -38,11 +39,21 @@ spec:
               tag: 1.28.2.6151-914ddd2b3
             env:
               TZ: Europe/Warsaw
+            resources:
+              requests:
+                cpu: 100m
+                gpu.intel.com/i915: 1
+                memory: 3G
+              limits:
+                gpu.intel.com/i915: 1
+                memory: 4G
+
     service:
       main:
         type: LoadBalancer
-        externalTrafficPolicy: Local
-        loadBalancerIP: "${PLEX_ADDRESS}"
+        externalTrafficPolicy: Cluster
+        annotations:
+          io.cilium/lb-ipam-ips: "${PLEX_ADDRESS}"
         ports:
           http:
             port: 32400
@@ -52,12 +63,6 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
           nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-          nginx.ingress.kubernetes.io/configuration-snippet: |
-            location = / {
-              if ($http_x_plex_device = ""){
-                return 301 $scheme://$host/web/index.html;
-              }
-            }
         className: external
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
@@ -70,6 +75,7 @@ spec:
         tls:
           - hosts:
               - *host
+
     defaultPodOptions:
       securityContext:
         runAsUser: 568
@@ -81,21 +87,17 @@ spec:
       config:
         enabled: true
         existingClaim: plex-config
+        globalMounts:
+          - path: /config
       media:
         enabled: true
         type: nfs
-        globalMounts:
-          - path: /media
         server: "${NAS_ADDRESS}"
         path: "${NAS_BASE_URL}/media"
+        globalMounts:
+          - path: /media
       transcode:
         enabled: true
         type: emptyDir
-    resources:
-      requests:
-        cpu: 100m
-        gpu.intel.com/i915: 1
-        memory: 3G
-      limits:
-        gpu.intel.com/i915: 1
-        memory: 4G
+        globalMounts:
+          - path: /transcode
