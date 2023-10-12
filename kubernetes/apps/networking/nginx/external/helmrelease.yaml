@@ -44,7 +44,8 @@ spec:
               operator: In
               values: ["external"]
       config:
-        ssl-redirect: true
+        ssl-redirect: false
+        force-ssl-redirect: false
         client-body-buffer-size: 100M
         client-body-timeout: 120
         client-header-timeout: 120
