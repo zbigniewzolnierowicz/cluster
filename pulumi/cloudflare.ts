@@ -1,5 +1,4 @@
-import * as cloudflare from "@pulumi/cloudflare";
-import * as purrl from "@pulumiverse/purrl";
+import * as cloudflare from "@pulumi/cloudflare"; import * as purrl from "@pulumiverse/purrl";
 import { Resource } from "@pulumi/pulumi";
 
 export class CloudflareRecords {
@@ -26,6 +25,16 @@ export class CloudflareRecords {
         {
           type: "A",
           name: "external",
+          value: currentIpAddressQuery.response,
+          zoneId,
+        },
+        { provider },
+      ),
+      new cloudflare.Record(
+        "wireguard",
+        {
+          type: "A",
+          name: "wg",
           value: currentIpAddressQuery.response,
           zoneId,
         },
