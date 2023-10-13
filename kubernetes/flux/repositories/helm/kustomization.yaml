@@ -21,3 +21,4 @@ resources:
   - ./openebs.yaml
   - ./intel.yaml
   - ./node-feature-discovery.yaml
+  - ./kubito.yaml

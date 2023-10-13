@@ -9,79 +9,107 @@
       ansible.builtin.pause:
         seconds: 5
   tasks:
-  - name: Get absolute path to this Git repository # noqa: command-instead-of-module
-    ansible.builtin.command: git rev-parse --show-toplevel
-    changed_when: false
-    check_mode: false
-    register: repository
-    failed_when: repository.rc != 0
+    - name: Get Cloudflare zone info
+      ansible.builtin.uri:
+        url: https://api.cloudflare.com/client/v4/zones/
+        headers:
+          Content-Type: application/json
+          Authorization: Bearer {{ bootstrap_cloudflare_token }}
+      register: cf_zones
 
-  - name: Set facts
-    ansible.builtin.set_fact:
-      repository_path: "{{ repository.stdout }}"
+    - name: Get Cloudflare id for target zone
+      ansible.builtin.set_fact:
+        cf_zone_id: '{{ item.id }}'
+      loop: '{{ cf_zones.json.result }}'
+      when: item.name == 'zed.gay'
 
-  - name: Ensure Kubernetes directories exist
-    when: item.state == 'directory'
-    ansible.builtin.file:
-      path: "{{ repository_path }}/kubernetes/{{ item.path }}"
-      state: directory
-      mode: "0755"
-    with_community.general.filetree: ["../templates/kubernetes/"]
+    - name: Get all A records from Cloudflare
+      ansible.builtin.uri:
+        url: 'https://api.cloudflare.com/client/v4/zones/{{ cf_zone_id }}/dns_records?type=A'
+        headers:
+          Content-Type: application/json
+          Authorization: Bearer {{ bootstrap_cloudflare_token }}
+      register: cf_records
 
-  - name: Template Kubernetes unencrypted files
-    when:
-      - item.state == 'file'
-      - "'.DS_Store' not in item.path"
-      - "'sops' not in item.path"
-      - "'cluster-settings-user.yaml.j2' not in item.path"
-      - "'cluster-secrets-user.yaml.j2' not in item.path"
-    ansible.builtin.template:
-      src: "{{ item.src }}"
-      dest: "{{ repository_path }}/kubernetes/{{ item.path | regex_replace('.j2$', '') }}"
-      mode: "0644"
-    with_community.general.filetree: ["../templates/kubernetes/"]
+    - name: Grab ID of external record
+      ansible.builtin.set_fact:
+        cf_record_id: '{{ item.id }}'
+      loop: '{{ cf_records.json.result }}'
+      when: item.name == 'external.zed.gay'
 
-  - name: Check if the cluster user settings file already exists
-    stat:
-      path: "{{ repository_path }}/kubernetes/flux/vars/cluster-settings-user.yaml"
-    register: cluster_settings_user
+    - name: Get absolute path to this Git repository # noqa: command-instead-of-module
+      ansible.builtin.command: git rev-parse --show-toplevel
+      changed_when: false
+      check_mode: false
+      register: repository
+      failed_when: repository.rc != 0
 
-  - name: Template Kubernetes user cluster settings
-    when:
-      - item.state == 'file'
-      - "'cluster-settings-user.yaml' in item.path"
-      - not cluster_settings_user.stat.exists
-    ansible.builtin.template:
-      src: "{{ item.src }}"
-      dest: "{{ repository_path }}/kubernetes/{{ item.path | regex_replace('.j2$', '') }}"
-      mode: "0644"
-    with_community.general.filetree: ["../templates/kubernetes/"]
+    - name: Set facts
+      ansible.builtin.set_fact:
+        repository_path: "{{ repository.stdout }}"
 
-  - name: Check if the cluster user secrets file already exists
-    stat:
-      path: "{{ repository_path }}/kubernetes/flux/vars/cluster-secrets-user.yaml"
-    register: cluster_secrets_user
+    - name: Ensure Kubernetes directories exist
+      when: item.state == 'directory'
+      ansible.builtin.file:
+        path: "{{ repository_path }}/kubernetes/{{ item.path }}"
+        state: directory
+        mode: "0755"
+      with_community.general.filetree: ["../templates/kubernetes/"]
 
-  - name: Template Kubernetes user cluster secrets
-    when:
-      - item.state == 'file'
-      - "'cluster-secrets-user.yaml' in item.path"
-      - not cluster_secrets_user.stat.exists
-    ansible.builtin.template:
-      src: "{{ item.src }}"
-      dest: "{{ repository_path }}/kubernetes/{{ item.path | regex_replace('.j2$', '') }}"
-      mode: "0644"
-    with_community.general.filetree: ["../templates/kubernetes/"]
+    - name: Template Kubernetes unencrypted files
+      when:
+        - item.state == 'file'
+        - "'.DS_Store' not in item.path"
+        - "'sops' not in item.path"
+        - "'cluster-settings-user.yaml.j2' not in item.path"
+        - "'cluster-secrets-user.yaml.j2' not in item.path"
+      ansible.builtin.template:
+        src: "{{ item.src }}"
+        dest: "{{ repository_path }}/kubernetes/{{ item.path | regex_replace('.j2$', '') }}"
+        mode: "0644"
+      with_community.general.filetree: ["../templates/kubernetes/"]
 
-  - name: Template Kubernetes encrypted files
-    block:
-      - name: Template Kubernetes encrypted files
-        when: item.state == 'file' and 'sops' in item.path
-        community.sops.sops_encrypt:
-          path: "{{ repository_path }}/kubernetes/{{ item.path | replace('.j2', '') }}"
-          encrypted_regex: ^(data|stringData)$
-          age: ["{{ bootstrap_age_public_key }}"]
-          content_yaml: "{{ lookup('ansible.builtin.template', item.src) | from_yaml }}"
-          mode: "0644"
-          force: true
-        with_community.general.filetree: ["../templates/kubernetes/"]
+    - name: Check if the cluster user settings file already exists
+      ansible.builtin.stat:
+        path: "{{ repository_path }}/kubernetes/flux/vars/cluster-settings-user.yaml"
+      register: cluster_settings_user
+
+    - name: Template Kubernetes user cluster settings
+      when:
+        - item.state == 'file'
+        - "'cluster-settings-user.yaml' in item.path"
+        - not cluster_settings_user.stat.exists
+      ansible.builtin.template:
+        src: "{{ item.src }}"
+        dest: "{{ repository_path }}/kubernetes/{{ item.path | regex_replace('.j2$', '') }}"
+        mode: "0644"
+      with_community.general.filetree: ["../templates/kubernetes/"]
+
+    - name: Check if the cluster user secrets file already exists
+      ansible.builtin.stat:
+        path: "{{ repository_path }}/kubernetes/flux/vars/cluster-secrets-user.yaml"
+      register: cluster_secrets_user
+
+    - name: Template Kubernetes user cluster secrets
+      when:
+        - item.state == 'file'
+        - "'cluster-secrets-user.yaml' in item.path"
+        - not cluster_secrets_user.stat.exists
+      ansible.builtin.template:
+        src: "{{ item.src }}"
+        dest: "{{ repository_path }}/kubernetes/{{ item.path | regex_replace('.j2$', '') }}"
+        mode: "0644"
+      with_community.general.filetree: ["../templates/kubernetes/"]
+
+    - name: Template Kubernetes encrypted files
+      block:
+        - name: Template Kubernetes encrypted files
+          when: item.state == 'file' and 'sops' in item.path
+          community.sops.sops_encrypt:
+            path: "{{ repository_path }}/kubernetes/{{ item.path | replace('.j2', '') }}"
+            encrypted_regex: ^(data|stringData)$
+            age: ["{{ bootstrap_age_public_key }}"]
+            content_yaml: "{{ lookup('ansible.builtin.template', item.src) | from_yaml }}"
+            mode: "0644"
+            force: true
+          with_community.general.filetree: ["../templates/kubernetes/"]

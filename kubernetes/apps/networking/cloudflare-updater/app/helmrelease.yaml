@@ -1,0 +1,39 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: cloudflare-updater
+  namespace: networking
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: kubernetes-cloudflare-ddns
+      version: 1.0.6
+      sourceRef:
+        kind: HelmRepository
+        name: kubito
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    image:
+      repository: kubitodev/kubernetes-cloudflare-ddns
+      tag: 1.0.1
+    cron:
+      job:
+        schedule: "0 0 * * *"
+    secret:
+      authKey: "${SECRET_CLOUDFLARE_TOKEN}"
+      dnsRecord: "external.${SECRET_DOMAIN}"
+      recordId: "${SECRET_RECORD_ID}"
+      zoneId: "${SECRET_ZONE_ID}"
+
