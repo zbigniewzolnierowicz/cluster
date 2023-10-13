@@ -6,7 +6,6 @@
   vars:
     wireguard_dir: "/opt/wireguard"
     wireguard_password: "{{ lookup('ansible.builtin.env', 'WIREGUARD_PASSWORD') }}"
-    wireguard_hostname: "{{ lookup('ansible.builtin.env', 'WG_EASY_HOSTNAME') }}"
     pihole_password: "{{ lookup('ansible.builtin.env', 'PIHOLE_PASSWORD') }}"
   pre_tasks:
     - name: Pausing for 5 seconds...
@@ -19,7 +18,6 @@
       ansible.builtin.assert:
         that:
           - wireguard_password | length > 0
-          - wireguard_hostname | length > 0
     - name: Add Docker signing key
       ansible.builtin.rpm_key:
         state: present
@@ -76,7 +74,20 @@
         src: "../bootstrap/wireguard/compose.yaml"
         dest: "{{ wireguard_dir }}/docker-compose.yaml"
         owner: "{{ user.name }}"
+    - name: get outside IP address
+      ansible.builtin.uri:
+        url: https://api.ipify.org
+        mode: GET
+        return_content: true
+      register: ip_address
+    - name: debug
+      ansible.builtin.debug:
+        var: ip_address
+    - ansible.builtin.pause:
+        seconds: 5
     - name: Write Wireguard env file
+      vars:
+        wireguard_hostname: "{{ ip_address.content }}"
       ansible.builtin.template:
         src: "../templates/wg.env.j2"
         dest: "{{ wireguard_dir }}/wg.env"
