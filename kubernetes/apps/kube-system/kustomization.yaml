@@ -12,3 +12,4 @@ resources:
   - ./openebs/ks.yaml
   - ./intel-device-plugin/ks.yaml
   - ./node-feature-discovery/ks.yaml
+  - ./ghcr-secret.sops.yaml
