@@ -32,7 +32,7 @@ spec:
           main:
             image:
               repository: ghcr.io/zbigniewzolnierowicz/waybetterhome
-              tag: v1.6.1
+              tag: v1.6.2
             resources:
               requests:
                 cpu: 100m
