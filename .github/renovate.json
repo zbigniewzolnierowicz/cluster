@@ -15,23 +15,6 @@
   "suppressNotifications": ["prIgnoreNotification"],
   "rebaseWhen": "conflicted",
   "schedule": ["on saturday"],
-  "hostRules": [
-    {
-      "hostType": "github",
-      "matchHost": "https://github.com/zbigniewzolnierowicz",
-      "encrypted": {
-        "token": "wcFMA/xDdHCJBTolAQ\/\/cHh+DPZIZpzgtp6ThVpjfCjyqyFmOLY3lgc+Zf2hxuao02tgzqw2+ykuZjp5CX/0yW5EGyGwRdly9Piizej8HWAXFtrXNbznqWIWZlxBQRdotyTQhyNogGG+hv+SNoSbUHENs/Rl+GtJzvBRyzPCIdhkS5xbxQ7LauIWtRenJApO4+YeevsMKf2Zwm43Jq1A9kotg36fniPvYAFkCtr2dMZDHUf6OGvbIcAGg/P0HPQP5ltyvGJlAIA/3sA1oYGJUfJORzUlZvO5F9WGHMBXDAxDLjjre23u6d+fTQCtjoPJCjIkjQF/HCl9ue74WKMgXhUCjNcyDpFRZMoWwj82OQiTz5h06ejoss4iraZ7+ZibEiYtG6fgb0Lnti9AA/6rMXYKS0uWTCm7CsnRyTLVXZXuaLXQnWzwnL2EoMawSZ4zzYPHekCrM20Q7GCIERxEoLUc6wTcDyZm+4m0OuGIYZ3RJjCPGu+nN0xe1YzPcl/5SO36g58nZ4MIXzP0umjI+YGSyTjkGm25YmLq75S8BxDGRoMQJSfnc0r76gVBO9lwbQeWPbtT75phFFaOS6YrMAuyJ1nikULwc8XYz2Q6/QizH6VfUpSD6a0NdIxWTRg7hS624cs3G6LPlAeq5DWx+coldTWyQrCgbOFDdIaMCLjL0T4tKaAXTUFRywLPtdzSgwGP/j3Ara5MIB88eoO/T0IZQX5XW9zAGSYhX1t1dqsDucCmTsAQBWTSmnU/SKwEtOKEo7zOkoSUco/gMi9TfQ003h7uMatCKnmD5Y9zDP/oByNmeFWPKbWj2odzKV5xNdgnt2iFueVMpyLOlAjt1dWA25vDIBJ0EMNB6Kp8E6XfQQT9"
-        }
-    },
-    {
-      "hostType": "docker",
-      "matchHost": "ghcr.io",
-      "username": "zbigniewzolnierowicz",
-      "encrypted": {
-        "password": "wcFMA/xDdHCJBTolAQ\/\/cHh+DPZIZpzgtp6ThVpjfCjyqyFmOLY3lgc+Zf2hxuao02tgzqw2+ykuZjp5CX/0yW5EGyGwRdly9Piizej8HWAXFtrXNbznqWIWZlxBQRdotyTQhyNogGG+hv+SNoSbUHENs/Rl+GtJzvBRyzPCIdhkS5xbxQ7LauIWtRenJApO4+YeevsMKf2Zwm43Jq1A9kotg36fniPvYAFkCtr2dMZDHUf6OGvbIcAGg/P0HPQP5ltyvGJlAIA/3sA1oYGJUfJORzUlZvO5F9WGHMBXDAxDLjjre23u6d+fTQCtjoPJCjIkjQF/HCl9ue74WKMgXhUCjNcyDpFRZMoWwj82OQiTz5h06ejoss4iraZ7+ZibEiYtG6fgb0Lnti9AA/6rMXYKS0uWTCm7CsnRyTLVXZXuaLXQnWzwnL2EoMawSZ4zzYPHekCrM20Q7GCIERxEoLUc6wTcDyZm+4m0OuGIYZ3RJjCPGu+nN0xe1YzPcl/5SO36g58nZ4MIXzP0umjI+YGSyTjkGm25YmLq75S8BxDGRoMQJSfnc0r76gVBO9lwbQeWPbtT75phFFaOS6YrMAuyJ1nikULwc8XYz2Q6/QizH6VfUpSD6a0NdIxWTRg7hS624cs3G6LPlAeq5DWx+coldTWyQrCgbOFDdIaMCLjL0T4tKaAXTUFRywLPtdzSgwGP/j3Ara5MIB88eoO/T0IZQX5XW9zAGSYhX1t1dqsDucCmTsAQBWTSmnU/SKwEtOKEo7zOkoSUco/gMi9TfQ003h7uMatCKnmD5Y9zDP/oByNmeFWPKbWj2odzKV5xNdgnt2iFueVMpyLOlAjt1dWA25vDIBJ0EMNB6Kp8E6XfQQT9"
-        }
-    }
-  ],
   "flux": {
     "fileMatch": [
       "(^|/)addons/.+\\.ya?ml(\\.j2)?(\\.j2)?$",
