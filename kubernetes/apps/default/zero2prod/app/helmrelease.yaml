@@ -60,10 +60,7 @@ spec:
     ingress:
       main:
         enabled: true
-        className: external
-        annotations:
-          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
-          nginx.ingress.kubernetes.io/backend-protocol: HTTP
+        className: internal
         hosts:
           - host: &host "zero2prod.${SECRET_DOMAIN}"
             paths:
