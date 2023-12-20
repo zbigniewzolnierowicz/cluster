@@ -25,6 +25,15 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  valuesFrom:
+    - kind: Secret
+      name: zero2prod-cluster-secret
+      targetPath: controllers.main.containers.main.env.APP_DATABASE__USERNAME
+      valuesKey: username
+    - kind: Secret
+      name: zero2prod-cluster-secret
+      targetPath: controllers.main.containers.main.env.APP_DATABASE__PASSWORD
+      valuesKey: password
   values:
     controllers:
       main:
@@ -35,6 +44,8 @@ spec:
               tag: sha-6fc410f 
             env:
               APP_APPLICATION__PORT: 80
+              APP_DATABASE__HOST: zero2prod-cluster-rw
+              APP_DATABASE__PORT: 5432
             resources:
               requests:
                 cpu: 100m
