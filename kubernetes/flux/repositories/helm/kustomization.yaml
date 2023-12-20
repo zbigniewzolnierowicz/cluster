@@ -22,3 +22,4 @@ resources:
   - ./intel.yaml
   - ./node-feature-discovery.yaml
   - ./kubito.yaml
+  - ./cloudnative-pg.yaml
