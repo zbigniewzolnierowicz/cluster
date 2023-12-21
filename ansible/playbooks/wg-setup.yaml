@@ -53,7 +53,7 @@
         state: started
         enabled: true
     - name: add ip_tables kernel module
-      ansible.builtin.modprobe:
+      community.general.modprobe:
         name: ip_tables
         state: absent
         persistent: absent
