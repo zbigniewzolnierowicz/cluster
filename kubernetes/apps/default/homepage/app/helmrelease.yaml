@@ -32,7 +32,7 @@ spec:
           main:
             image:
               repository: ghcr.io/zbigniewzolnierowicz/home
-              tag: v2.0.2
+              tag: v2.0.3
             resources:
               requests:
                 cpu: 100m

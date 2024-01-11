@@ -29,3 +29,9 @@ ansible-flux:
 
 reconcile:
   flux reconcile source git -n flux-system home-kubernetes
+
+hr-watch:
+  hwatch kubectl get -A helmreleases
+
+ks-watch:
+  hwatch kubectl get -A helmreleases
