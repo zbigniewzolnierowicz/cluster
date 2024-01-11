@@ -34,4 +34,4 @@ hr-watch:
   hwatch kubectl get -A helmreleases
 
 ks-watch:
-  hwatch kubectl get -A helmreleases
+  hwatch kubectl get -A ks
