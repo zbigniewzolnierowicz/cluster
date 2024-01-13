@@ -42,7 +42,7 @@ spec:
               READARR__LOG_LEVEL: info
               READARR__PORT: &port 80
               READARR__APPLICATION_URL: "https://{{ .Release.Name }}.${SECRET_DOMAIN}"
-              # READARR__API_KEY: ${SECRET_READARR_API_KEY}
+              READARR__API_KEY: ${SECRET_READARR_API_KEY}
     service:
       main:
         ports:

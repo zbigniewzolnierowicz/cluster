@@ -42,7 +42,7 @@ spec:
               LIDARR__LOG_LEVEL: info
               LIDARR__PORT: &port 80
               LIDARR__APPLICATION_URL: "https://{{ .Release.Name }}.${SECRET_DOMAIN}"
-              # LIDARR__API_KEY: ${SECRET_LIDARR_API_KEY}
+              LIDARR__API_KEY: ${SECRET_LIDARR_API_KEY}
     service:
       main:
         ports:
