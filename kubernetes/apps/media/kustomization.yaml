@@ -8,3 +8,6 @@ resources:
   - ./plex/ks.yaml
   - ./sonarr/ks.yaml
   - ./recyclarr/ks.yaml
+  - ./radarr/ks.yaml
+  - ./readarr/ks.yaml
+  - ./lidarr/ks.yaml

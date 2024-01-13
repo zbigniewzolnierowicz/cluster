@@ -47,6 +47,8 @@ all:
     plex_address: 192.168.1.249
     sonarr_api_key: "{{ lookup('ansible.builtin.env', 'SONARR_API_KEY') }}"
     radarr_api_key: "{{ lookup('ansible.builtin.env', 'RADARR_API_KEY') }}"
+    lidarr_api_key: "{{ lookup('ansible.builtin.env', 'LIDARR_API_KEY') }}"
+    readarr_api_key: "{{ lookup('ansible.builtin.env', 'READARR_API_KEY') }}"
     # }}}
 
 kubernetes:
