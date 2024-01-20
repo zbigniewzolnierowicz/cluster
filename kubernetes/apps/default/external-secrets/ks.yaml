@@ -26,6 +26,8 @@ spec:
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+  dependsOn:
+    - name: cluster-apps-external-secrets
   wait: false
   interval: 30m
   retryInterval: 1m
