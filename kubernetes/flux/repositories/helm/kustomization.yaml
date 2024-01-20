@@ -23,3 +23,4 @@ resources:
   - ./node-feature-discovery.yaml
   - ./kubito.yaml
   - ./cloudnative-pg.yaml
+  - ./external-secrets.yaml
