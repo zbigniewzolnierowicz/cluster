@@ -42,7 +42,9 @@ spec:
               RADARR__LOG_LEVEL: info
               RADARR__PORT: &port 80
               RADARR__APPLICATION_URL: "https://{{ .Release.Name }}.${SECRET_DOMAIN}"
-              RADARR__API_KEY: ${SECRET_RADARR_API_KEY}
+            envFrom:
+              - secretRef:
+                  name: radarr-secret
     service:
       main:
         ports:
