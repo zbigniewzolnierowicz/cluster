@@ -4,26 +4,15 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: postgres16
+  namespace: database
 spec:
-  instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:16.1-13
+  instances: 1
   primaryUpdateStrategy: unsupervised
-  storage:
-    size: 20Gi
-    storageClass: openebs-jiva-csi-default
+  enableSuperuserAccess: true
   superuserSecret:
     name: cloudnative-pg-secret
-  enableSuperuserAccess: true
-  postgresql:
-    parameters:
-      max_connections: "600"
-      max_slot_wal_keep_size: 10GB
-      shared_buffers: 512MB
-  resources:
-    requests:
-      cpu: 500m
-    limits:
-      memory: 4Gi
+  storage:
+    size: 20Gi
   monitoring:
     enablePodMonitor: true
     # Ref: https://github.com/cloudnative-pg/cloudnative-pg/issues/2501
