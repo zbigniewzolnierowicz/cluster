@@ -12,4 +12,3 @@ resources:
   - ./openebs/ks.yaml
   - ./intel-device-plugin/ks.yaml
   - ./node-feature-discovery/ks.yaml
-  - ./cloudnative-pg/ks.yaml
