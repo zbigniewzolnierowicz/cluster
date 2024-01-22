@@ -15,7 +15,7 @@ authentication_backend:
     additional_groups_dn: ou=groups
     groups_filter: (member={dn})
     group_search_mode: filter
-    user: uid=admin,ou=people,dc=home,dc=arpa
+    user: uid=admin,ou=people,dc=zed,dc=gay
     password: password
     attributes:
       username: uid
