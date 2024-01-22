@@ -9,6 +9,7 @@ spec:
   prune: true
   dependsOn:
     - name: cluster-apps-external-secrets
+    - name: cluster-apps-cloudnative-pg-cluster
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
