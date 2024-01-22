@@ -7,3 +7,4 @@ resources:
   - ./ghcr-secret.sops.yaml
   - ./external-secrets/ks.yaml
   - ./lldap/ks.yaml
+  - ./authelia/ks.yaml
