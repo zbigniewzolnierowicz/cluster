@@ -1,0 +1,78 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: &app payload-homepage
+  namespace: default
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 2.4.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      main:
+        replicas: 3
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 16
+            envFrom: &envFrom
+              - secretRef:
+                  name: payload-secret
+        containers:
+          main:
+            image:
+              repository: ghcr.io/zbigniewzolnierowicz/payload-home
+              tag: v1.0.0
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128M
+              limits:
+                memory: 256M
+            envFrom: *envFrom
+    service:
+      main:
+        ports:
+          http:
+            port: 80
+    ingress:
+      main:
+        enabled: true
+        className: internal
+        annotations:
+          nginx.ingress.kubernetes.io/backend-protocol: HTTP
+        hosts:
+          - host: &host "payload.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  name: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
+    defaultPodOptions:
+      imagePullSecrets:
+        - name: ghcr-secret
+    podAnnotations:
+      secret.reloader.stakater.com/reload: *app

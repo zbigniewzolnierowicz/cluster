@@ -8,3 +8,4 @@ resources:
   - ./external-secrets/ks.yaml
   - ./lldap/ks.yaml
   - ./authelia/ks.yaml
+  - ./payload-home/ks.yaml
