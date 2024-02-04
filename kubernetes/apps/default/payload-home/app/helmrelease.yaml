@@ -41,7 +41,7 @@ spec:
           main:
             image:
               repository: ghcr.io/zbigniewzolnierowicz/payload-home
-              tag: v1.0.1
+              tag: v1.0.4
             resources:
               requests:
                 cpu: 100m
@@ -49,11 +49,13 @@ spec:
               limits:
                 memory: 256M
             envFrom: *envFrom
+            env:
+              PORT: &port 80
     service:
       main:
         ports:
           http:
-            port: 80
+            port: *port
     ingress:
       main:
         enabled: true
@@ -71,6 +73,13 @@ spec:
         tls:
           - hosts:
               - *host
+    persistence:
+      uploads:
+        enabled: true
+        type: persistentVolumeClaim
+        size: 10Gi
+        globalMounts:
+          - path: /dist/media
     defaultPodOptions:
       imagePullSecrets:
         - name: ghcr-secret
