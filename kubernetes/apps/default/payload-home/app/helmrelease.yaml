@@ -76,10 +76,7 @@ spec:
     persistence:
       uploads:
         enabled: true
-        type: persistentVolumeClaim
-        size: 10Gi
-        globalMounts:
-          - path: /dist/media
+        existingClaim: payload-uploads
     defaultPodOptions:
       imagePullSecrets:
         - name: ghcr-secret
