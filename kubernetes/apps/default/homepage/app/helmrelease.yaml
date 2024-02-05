@@ -33,18 +33,22 @@ spec:
           main:
             image:
               repository: ghcr.io/zbigniewzolnierowicz/home
-              tag: v2.0.8
+              tag: v3.0.6
             resources:
               requests:
                 cpu: 100m
                 memory: 128M
               limits:
                 memory: 256M
+            env:
+              HOST: 0.0.0.0
+              PORT: &port 80
+              PAYLOAD_URL: "http://payload-homepage"
     service:
       main:
         ports:
           http:
-            port: 80
+            port: *port
     ingress:
       main:
         enabled: true
