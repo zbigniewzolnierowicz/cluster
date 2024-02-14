@@ -34,7 +34,7 @@ spec:
           main:
             image:
               repository: ghcr.io/zbigniewzolnierowicz/home
-              tag: v3.1.0
+              tag: v3.2.0
             resources:
               requests:
                 cpu: 100m
@@ -45,6 +45,7 @@ spec:
               HOST: 0.0.0.0
               PORT: &port 80
               PAYLOAD_URL: "http://payload-homepage"
+              S3_PUBLIC_URL: "https://s3.zed.gay"
     service:
       main:
         ports:
