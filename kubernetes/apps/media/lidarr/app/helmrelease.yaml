@@ -35,7 +35,7 @@ spec:
           main:
             image:
               repository: ghcr.io/onedr0p/lidarr-develop
-              tag: 1.4.5.3639
+              tag: 2.1.7.4030
             env:
               TZ: Europe/Warsaw
               LIDARR__INSTANCE_NAME: LIDARR
