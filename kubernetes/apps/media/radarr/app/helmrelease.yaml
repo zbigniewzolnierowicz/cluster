@@ -35,7 +35,7 @@ spec:
           main:
             image:
               repository: ghcr.io/onedr0p/radarr-develop
-              tag: 5.3.5
+              tag: 5.4.1
             env:
               TZ: Europe/Warsaw
               RADARR__INSTANCE_NAME: Radarr
