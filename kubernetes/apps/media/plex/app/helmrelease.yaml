@@ -30,26 +30,51 @@ spec:
       namespace: kube-system
   values:
     controllers:
-      main:
-        type: statefulset
+      plex:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          nodeSelector:
+            intel.feature.node.kubernetes.io/gpu: "true"
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: "OnRootMismatch"
+            supplementalGroups:
+              - 44
+              - 109
+
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/onedr0p/plex
-              tag: 1.32.7.7621-871adbd44 
+              tag: 1.40.1.8227-c0dd5a73e@sha256:4ca8db0ffa1bee5a2976a0385cc43368112e81a2485b80d0fff3b04c9d5bd1ca
             env:
-              TZ: Europe/Warsaw
+              PLEX_ADVERTISE_URL: https://${PLEX_ADDRESS}:32400,https://plex.zed.gay:443
+              PLEX_NO_AUTH_NETWORKS: 192.168.1.0/24
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
             resources:
               requests:
                 cpu: 100m
                 gpu.intel.com/i915: 1
-                memory: 3G
+                memory: 4G
               limits:
                 gpu.intel.com/i915: 1
                 memory: 4G
-
     service:
-      main:
+      app:
+        controller: plex
         type: LoadBalancer
         externalTrafficPolicy: Cluster
         annotations:
@@ -58,18 +83,20 @@ spec:
           http:
             port: 32400
     ingress:
-      main:
+      app:
         enabled: true
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+          external-dns.alpha.kubernetes.io/endpoints-type: NodeExternalIP
           nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+        className: external
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
                 service:
-                  name: main
+                  name: app
                   port: http
         tls:
           - hosts: [*host]
