@@ -73,9 +73,7 @@ spec:
                   name: main
                   port: http
         tls:
-          - hosts:
-              - *host
-
+          - hosts: [*host]
     defaultPodOptions:
       securityContext:
         runAsUser: 568
